@@ -31,6 +31,7 @@ from bessel import (Bessel, bessel_I, bessel_J, bessel_K, bessel_Y,
                     hankel1, hankel2,
                     spherical_bessel_J, spherical_bessel_Y,
                     spherical_hankel1, spherical_hankel2,
+                    struve_H, struve_L,
 )
 
 from special import (spherical_harmonic,
