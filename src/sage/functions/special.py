@@ -110,21 +110,6 @@ implemented here.
      \int_{\theta=0}^\pi\int_{\varphi=0}^{2\pi} Y_\ell^mY_{\ell'}^{m'*}\,d\Omega =\delta_{\ell\ell'}\delta_{mm'}\quad\quad d\Omega =\sin\theta\,d\varphi\,d\theta .
 
 
-
--  For `x>0`, the confluent hypergeometric function
-   `y = U(a,b,x)` is defined to be the solution to Kummer's
-   differential equation
-
-
-   .. math::
-
-     xy'' + (b-x)y' - ay = 0,
-
-   which satisfies `U(a,b,x) \sim x^{-a}`, as
-   `x\rightarrow \infty`. (There is a linearly independent
-   solution, called Kummer's function `M(a,b,x)`, which is not
-   implemented.)
-
    -  The incomplete elliptic integrals (of the first kind, etc.) are:
 
       .. math::
@@ -147,9 +132,6 @@ REFERENCES:
 
 - Online Encyclopedia of Special Function
   http://algo.inria.fr/esf/index.html
-
-TODO: Resolve weird bug in commented out code in hypergeometric_U
-below.
 
 AUTHORS:
 
@@ -496,51 +478,6 @@ def airy_bi(x):
    return RDF(meval("airy_bi(%s)"%RDF(x)))
 
 
-def hypergeometric_U(alpha,beta,x,algorithm="pari",prec=53):
-    r"""
-    Default is a wrap of PARI's hyperu(alpha,beta,x) function.
-    Optionally, algorithm = "scipy" can be used.
-
-    The confluent hypergeometric function `y = U(a,b,x)` is
-    defined to be the solution to Kummer's differential equation
-
-    .. math::
-
-             xy'' + (b-x)y' - ay = 0.
-
-    This satisfies `U(a,b,x) \sim x^{-a}`, as
-    `x\rightarrow \infty`, and is sometimes denoted
-    ``x^{-a}2_F_0(a,1+a-b,-1/x)``. This is not the same as Kummer's
-    `M`-hypergeometric function, denoted sometimes as
-    ``_1F_1(alpha,beta,x)``, though it satisfies the same DE that
-    `U` does.
-
-    .. warning::
-
-       In the literature, both are called "Kummer confluent
-       hypergeometric" functions.
-
-    EXAMPLES::
-
-        sage: hypergeometric_U(1,1,1,"scipy")
-        0.596347362323...
-        sage: hypergeometric_U(1,1,1)
-        0.59634736232319...
-        sage: hypergeometric_U(1,1,1,"pari",70)
-        0.59634736232319407434...
-    """
-    if algorithm=="scipy":
-        if prec != 53:
-            raise ValueError("for the scipy algorithm the precision must be 53")
-        import scipy.special
-        return RDF(scipy.special.hyperu(float(alpha),float(beta),float(x)))
-    elif algorithm=='pari':
-        from sage.libs.pari.all import pari
-        R = RealField(prec)
-        return R(pari(R(alpha)).hyperu(R(beta), R(x), precision=prec))
-    else:
-        raise ValueError("unknown algorithm '%s'"%algorithm)
-
 class SphericalHarmonic(BuiltinFunction):
     r"""
     Returns the spherical harmonic function `Y_n^m(\theta, \varphi)`.
@@ -735,8 +672,8 @@ class EllipticE(BuiltinFunction):
         z
         sage: elliptic_e(0.5, 0.1)  # abs tol 2e-15
         0.498011394498832
-        sage: elliptic_e(0.5, 0.1).n(200)
-        0.4980113944988315277662138669...
+        sage: elliptic_e(1/2, 1/10).n(200)
+        0.49801139449883153311546104...
     """
     def __init__(self):
         """
@@ -784,8 +721,8 @@ class EllipticE(BuiltinFunction):
 
             sage: elliptic_e(0.5, 0.1)
             0.498011394498832
-            sage: elliptic_e(0.5, 0.1).n(200)
-            0.4980113944988315277662...
+            sage: elliptic_e(1/2, 1/10).n(200)
+            0.49801139449883153311546104...
             sage: elliptic_e(I, I).n()
             -0.189847437084712 + 1.03209769372160*I
         """

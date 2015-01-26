@@ -33,8 +33,7 @@ from bessel import (Bessel, bessel_I, bessel_J, bessel_K, bessel_Y,
                     spherical_hankel1, spherical_hankel2,
 )
 
-from special import (hypergeometric_U,
-                     spherical_harmonic,
+from special import (spherical_harmonic,
                      error_fcn, elliptic_e,
                      elliptic_f, elliptic_ec, elliptic_eu,
                      elliptic_kc, elliptic_pi, elliptic_j,
@@ -79,4 +78,4 @@ from exp_integral import (exp_integral_e, exp_integral_e1, log_integral, li, Li,
                           sinh_integral, cosh_integral, Shi, Chi,
                           exponential_integral_1, Ei)
 
-from hypergeometric import hypergeometric
+from hypergeometric import (hypergeometric, hypergeometric_M, hypergeometric_U)

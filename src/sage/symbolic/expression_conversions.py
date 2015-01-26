@@ -403,6 +403,13 @@ class InterfaceInit(Converter):
             sage: m(exp(x^2) + pi + 2)
             '(%pi)+(exp((_SAGE_VAR_x)^(2)))+(2)'
 
+        Test a special case (:trac:`16697`)::
+
+            sage: x,y=var('x,y')
+            sage: (gamma_inc(x,y).diff(x))
+            D[0](gamma)(x, y)
+            sage: (gamma_inc(x,x+1).diff(x)).simplify()
+            -(x + 1)^(x - 1)*e^(-x - 1) + D[0](gamma)(x, x + 1)
         """
         self.name_init = "_%s_init_"%interface.name()
         self.interface = interface
