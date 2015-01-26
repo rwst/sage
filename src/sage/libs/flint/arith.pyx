@@ -10,9 +10,22 @@ FLINT Arithmetic Functions
 
 include "sage/ext/interrupt.pxi"
 
+cdef extern from "flint/fmpq.h":
+    ctypedef void * fmpq_t
+    void fmpq_init(fmpq_t)
+    void fmpq_clear(fmpq_t)
+    void fmpq_get_mpq(mpq_t, fmpq_t)
+    void fmpq_set_mpq(fmpq_t, mpq_t)
+
+cdef extern from "flint/arith.h":
+    void arith_number_of_partitions(fmpz_t x, unsigned long n)
+    void arith_dedekind_sum(fmpq_t, fmpz_t, fmpz_t)
+    void arith_harmonic_number(fmpq_t, unsigned long n)
+
 from fmpz cimport *
 from fmpq cimport *
 from arith cimport *
+
 
 from sage.rings.integer cimport Integer
 from sage.rings.rational cimport Rational
@@ -144,6 +157,25 @@ def dedekind_sum(p, q):
 
     fmpz_clear(p_fmpz)
     fmpz_clear(q_fmpz)
+    fmpq_clear(s_fmpq)
+
+    return s
+
+def harmonic_number(unsigned long n):
+    """
+    Returns the harmonic number ``H_n``.
+
+    EXAMPLES::
+    """
+    s = Rational(0)
+    cdef fmpq_t s_fmpq
+
+    fmpq_init(s_fmpq)
+
+    arith_harmonic_number(s_fmpq, n)
+
+    fmpq_get_mpq((<Rational>s).value, s_fmpq)
+
     fmpq_clear(s_fmpq)
 
     return s
