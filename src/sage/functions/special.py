@@ -370,7 +370,7 @@ class EllipticE(BuiltinFunction):
         sage: elliptic_e(0.5, 0.1)  # abs tol 2e-15
         0.498011394498832
         sage: elliptic_e(1/2, 1/10).n(200)
-        0.49801139449883153311546104...
+        0.4980113944988315331154610406...
     """
     def __init__(self):
         """
@@ -419,9 +419,16 @@ class EllipticE(BuiltinFunction):
             sage: elliptic_e(0.5, 0.1)
             0.498011394498832
             sage: elliptic_e(1/2, 1/10).n(200)
-            0.49801139449883153311546104...
+            0.4980113944988315331154610406...
             sage: elliptic_e(I, I).n()
             -0.189847437084712 + 1.03209769372160*I
+
+        TESTS:
+
+        This gave an error in Maxima (:trac:`15046`)::
+
+            sage: elliptic_e(2.5, 2.5)
+            0.535647771608740 + 1.63996015168665*I
         """
         R = parent or parent(z)
         from mpmath import ellipe
@@ -485,7 +492,6 @@ class EllipticEC(BuiltinFunction):
     def _eval_(self, x):
         """
         EXAMPLES::
-
             sage: elliptic_ec(0)
             1/2*pi
             sage: elliptic_ec(1)
@@ -669,7 +675,6 @@ class EllipticF(BuiltinFunction):
     def _eval_(self, z, m):
         """
         EXAMPLES::
-
             sage: elliptic_f(x,1)
             elliptic_f(x, 1)
             sage: elliptic_f(x,0)
