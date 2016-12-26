@@ -4957,6 +4957,10 @@ cdef class Expression(CommutativeRingElement):
             43/42
             sage: (x+1/x+1).subs(1/x==pi)
             pi + x + 1
+            sage: sin(x/a).subs({1/x : 1, a : x, x : 1})
+            sin(1/x)
+            sage: sin(x/a).subs({a^-1 : x^-1, x : pi})
+            sin(pi/x)
         """
         from sage.symbolic.ring import SR
         cdef dict sdict = {}
@@ -4983,16 +4987,28 @@ cdef class Expression(CommutativeRingElement):
                         any(t.operator()==operator.pow and t.operands()[1]<0
                             for t in e.operands())))
 
-        cdef GExMap smap, invmap
+        cdef GExMap smap1, smap2, wmap
+        count = 0
         for k, v in sdict.iteritems():
-            smap.insert(make_pair((<Expression>self.coerce_in(k))._gobj,
+            if k.has_wild():
+                wmap.insert(make_pair((<Expression>self.coerce_in(k))._gobj,
+                    (<Expression>self.coerce_in(v))._gobj))
+                continue
+            tmpvar = SR.var('subsvar' + str(count))
+            smap1.insert(make_pair((<Expression>self.coerce_in(k))._gobj,
+                                  (<Expression>tmpvar)._gobj))
+            smap2.insert(make_pair((<Expression>tmpvar)._gobj,
                                   (<Expression>self.coerce_in(v))._gobj))
             if not SR(v).is_trivial_zero() and not is_fraction(SR(k)):
-                invmap.insert(make_pair((<Expression>self.coerce_in(1/k))._gobj,
+                tmpvar = SR.var('isubsvar' + str(count))
+                smap1.insert(make_pair((<Expression>self.coerce_in(1/k))._gobj,
+                                      (<Expression>tmpvar)._gobj))
+                smap2.insert(make_pair((<Expression>tmpvar)._gobj,
                                       (<Expression>self.coerce_in(1/v))._gobj))
+            count = count + 1
 
         return new_Expression_from_GEx(self._parent,
-                self._gobj.subs_map(smap, 0).subs_map(invmap, 0))
+                self._gobj.subs_map(wmap, 0).subs_map(smap1, 0).subs_map(smap2, 0))
 
     subs = substitute
 
