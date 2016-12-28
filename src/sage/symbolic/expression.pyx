@@ -4975,7 +4975,11 @@ cdef class Expression(CommutativeRingElement):
         for a in args:
             _dict_update_check_duplicate(sdict, _subs_make_dict(a))
 
+        options = 0
         if kwds:
+            options = kwds.get('options')
+            if options is None:
+                options = 0
             # Ensure that the keys are symbolic variables.
             varkwds = {self._parent.var(k): v for k,v in kwds.iteritems()}
             # Check for duplicate
@@ -5008,7 +5012,9 @@ cdef class Expression(CommutativeRingElement):
             count = count + 1
 
         return new_Expression_from_GEx(self._parent,
-                self._gobj.subs_map(wmap, 0).subs_map(smap1, 0).subs_map(smap2, 0))
+                self._gobj.subs_map(wmap, options)
+                .subs_map(smap1, options)
+                .subs_map(smap2, options))
 
     subs = substitute
 
@@ -5063,7 +5069,7 @@ cdef class Expression(CommutativeRingElement):
 
     def substitute_function(self, original, new):
         """
-        Return this symbolic expressions all occurrences of the
+        Return thi symbolic expression with all occurrences of the
         function *original* replaced with the function *new*.
 
         EXAMPLES::
@@ -5087,6 +5093,36 @@ cdef class Expression(CommutativeRingElement):
         """
         from sage.symbolic.expression_conversions import SubstituteFunction
         return SubstituteFunction(self, original, new)()
+
+    def substitute_piece(self, pattern, new):
+        """
+        Return this symbolic expression with all occurrences of the
+        pattern *ex* replaced inside piecewise funtions with *new*.
+
+        Note that the piecewise function does not get evaluated.
+
+        EXAMPLES::
+
+            sage: x,y = var('x,y')
+            sage: foo = function('foo'); bar = function('bar')
+            sage: f = foo(x) + 1/foo(pi*y)
+            sage: f.substitute_function(foo, bar)
+            1/bar(pi*y) + bar(x)
+        """
+        from sage.symbolic.expression_conversions import ExpressionTreeWalker
+        class SubstitutePiece(ExpressionTreeWalker):
+            def __init__(self, ex, pattern, new):
+                self.pattern = pattern
+                self.new = new
+                self.ex = ex
+            def composition(self, ex, operator):
+                from sage.functions.piecewise import piecewise
+                if operator == piecewise:
+                    return ex.subs(pattern == new, options=1024)
+                else:
+                    return super(SubstitutePiece, self).composition(ex, operator)
+        s = SubstitutePiece(self, pattern, new)
+        return s()
 
     def __call__(self, *args, **kwds):
         """
