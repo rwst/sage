@@ -1979,8 +1979,6 @@ class Function_falling_factorial(GinacFunction):
 
     -  ``x and a`` - any numbers
 
-    OUTPUT: the falling factorial
-
     EXAMPLES::
 
         sage: falling_factorial(10, 3)
@@ -2032,7 +2030,7 @@ falling_factorial = Function_falling_factorial()
 
 class Function_rising_factorial(GinacFunction):
     r"""
-    Returns the rising factorial `(x)^a`.
+    Return the rising factorial `(x)^a`.
 
     INPUT:
 
@@ -2050,30 +2048,20 @@ class Function_rising_factorial(GinacFunction):
 
         sage: rising_factorial(10,3)
         1320
-
-    ::
-
         sage: rising_factorial(10,RR('3.0'))
         1320.00000000000
-
-    ::
-
         sage: rising_factorial(10,RR('3.3'))
         2826.38895824964
-
-    ::
-
         sage: a = rising_factorial(1+I, I); a
         gamma(2*I + 1)/gamma(I + 1)
         sage: CC(a)
         0.266816390637832 + 0.122783354006372*I
-
-    ::
-
         sage: a = rising_factorial(I, 4); a
         -10
-
-    See falling_factorial(I, 4).
+        sage: rising_factorial(x,5)
+        (x + 4)*(x + 3)*(x + 2)*(x + 1)*x
+        sage: rising_factorial(x,5, hold=True)
+        rising_factorial(x, 5)
 
     ::
 
