@@ -85,6 +85,18 @@ cdef extern from "sage/libs/pynac/wrap.h":
         GExListIter end()
         GExList append_sym "append" (GSymbol e)
 
+    cdef cppclass GSymbolHasher "symbolhasher":
+        unsigned int operator()(GSymbol sym)
+
+    cdef cppclass GSymbolSetIter "std::unordered_set<symbol,symbolhasher>::const_iterator":
+        void inc "operator++" ()
+        GEx obj "operator*" ()
+        bint operator!=(GSymbolSetIter i)
+
+    cdef cppclass GSymbolSet "std::unordered_set<symbol,symbolhasher>":
+        GSymbolSetIter begin()
+        GSymbolSetIter end()
+
     cdef cppclass GEx "ex":
         GEx()
         GEx(GSymbol m)
@@ -105,6 +117,8 @@ cdef extern from "sage/libs/pynac/wrap.h":
         bint match(GEx pattern, GExList s) except +
         bint find(GEx pattern, GExList s) except +
         bint has(GEx pattern)         except +
+        GSymbolSet symbols()          except +
+        GSymbolSet free_symbols()     except +
         GEx subs(GEx expr)            except +
         GEx subs_map "subs" (GExMap map, unsigned options) except +
         GEx coeff(GEx expr, int n)    except +
