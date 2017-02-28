@@ -14,6 +14,10 @@
 
 using namespace GiNaC;
 
+namespace GiNaC {
+ex rubi(ex e, ex x);
+}
+
 void list_symbols(const ex& e, std::set<ex, ex_is_less> &s)
 {
     if (is_a<symbol>(e)) {

@@ -11815,6 +11815,17 @@ cdef class Expression(CommutativeRingElement):
 
     nintegrate = nintegral
 
+    def rubi(self, var):
+        cdef Expression v = self.coerce_in(var)
+        cdef GEx x
+        sig_on()
+        try:
+            x = g_rubi(self._gobj, v._gobj)
+        finally:
+            sig_off()
+        return new_Expression_from_GEx(self._parent, x)
+
+
     def minpoly(self, *args, **kwds):
         """
         Return the minimal polynomial of this symbolic expression.
