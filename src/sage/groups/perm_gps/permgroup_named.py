@@ -96,6 +96,7 @@ from sage.groups.perm_gps.permgroup import PermutationGroup_generic
 from sage.groups.perm_gps.permgroup_element import SymmetricGroupElement
 from sage.structure.unique_representation import CachedRepresentation
 from sage.structure.parent import Parent
+from sage.structure.richcmp import richcmp
 from sage.categories.finite_enumerated_sets import FiniteEnumeratedSets
 from sage.sets.finite_enumerated_set import FiniteEnumeratedSet
 from sage.sets.disjoint_union_enumerated_sets import DisjointUnionEnumeratedSets
@@ -146,7 +147,7 @@ class PermutationGroup_unique(CachedRepresentation, PermutationGroup_generic):
 
             The hash currently is broken for this comparison.
         """
-        return self.__cmp__(other) == 0
+        return super(CachedRepresentation, self).__eq__(other)
 
 
 class PermutationGroup_symalt(PermutationGroup_unique):
@@ -312,7 +313,7 @@ class SymmetricGroup(PermutationGroup_symalt):
         """
         return tuple(self.domain()[:-1])
 
-    def __cmp__(self, x):
+    def __richcmp__(self, x, op):
         """
         Fast comparison for SymmetricGroups.
 
@@ -324,8 +325,8 @@ class SymmetricGroup(PermutationGroup_symalt):
             True
         """
         if isinstance(x, SymmetricGroup):
-            return cmp((self._deg, self._domain), (x._deg, x._domain))
-        return PermutationGroup_generic.__cmp__(self, x)
+            return richcmp((self._deg, self._domain), (x._deg, x._domain), op)
+        return super(SymmetricGroup, self).__richcmp__(x, op)
 
     def _repr_(self):
         """
@@ -607,11 +608,11 @@ class SymmetricGroup(PermutationGroup_symalt):
 
             sage: S = SymmetricGroup([2,3,5])
             sage: S.algebra(QQ)
-            Group algebra of Symmetric group of order 3! as a permutation group over Rational Field
+            Algebra of Symmetric group of order 3! as a permutation group over Rational Field
             sage: a = S.an_element(); a
             (2,3,5)
             sage: S.algebra(QQ)(a)
-            B[(2,3,5)]
+            (2,3,5)
         """
         from sage.combinat.symmetric_group_algebra import SymmetricGroupAlgebra
         domain = self.domain()
@@ -995,7 +996,7 @@ class KleinFourGroup(PermutationGroup_unique):
 
             sage: G = KleinFourGroup(); G
             The Klein 4 group of order 4, as a permutation group
-            sage: list(G)
+            sage: sorted(G)
             [(), (3,4), (1,2), (1,2)(3,4)]
 
         TESTS::
@@ -1400,9 +1401,8 @@ class DihedralGroup(PermutationGroup_unique):
 
             sage: DihedralGroup(5).gens()
             [(1,2,3,4,5), (1,5)(2,4)]
-            sage: list(DihedralGroup(5))
-            [(), (1,5)(2,4), (1,2,3,4,5), (1,4)(2,3), (1,3,5,2,4), (2,5)(3,4),
-            (1,3)(4,5), (1,5,4,3,2), (1,4,2,5,3), (1,2)(3,5)]
+            sage: sorted(DihedralGroup(5))
+            [(), (2,5)(3,4), (1,2)(3,5), (1,2,3,4,5), (1,3)(4,5), (1,3,5,2,4), (1,4)(2,3), (1,4,2,5,3), (1,5,4,3,2), (1,5)(2,4)]
 
             sage: G = DihedralGroup(6)
             sage: G.order()
@@ -2244,7 +2244,7 @@ def PrimitiveGroups(d=None):
     isomorphisms using GAP. If ``d`` is not specified, it returns the
     set of all primitive groups up to isomorphisms stored in GAP.
 
-    .. attention::
+    .. WARNING::
 
         PrimitiveGroups requires the optional GAP database package.
         Please install it by running ``sage -i database_gap``.
@@ -3014,7 +3014,7 @@ class SuzukiGroup(PermutationGroup_unique):
 
         REFERENCES:
 
-        -  http://en.wikipedia.org/wiki/Group_of_Lie_type\#Suzuki-Ree_groups
+        -  :wikipedia:`Group_of_Lie_type\#Suzuki-Ree_groups`
         """
         q = Integer(q)
         t = valuation(q, 2)

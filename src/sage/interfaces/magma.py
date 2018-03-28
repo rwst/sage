@@ -213,6 +213,7 @@ AUTHORS:
 #*****************************************************************************
 from __future__ import print_function
 from __future__ import absolute_import
+from six import string_types
 
 import re
 import sys
@@ -365,7 +366,8 @@ class Magma(ExtraTabCompletion, Expect):
 
     def set_seed(self, seed=None):
         """
-        Sets the seed for the Magma interpeter.
+        Set the seed for the Magma interpreter.
+
         The seed should be an integer.
 
         EXAMPLES::
@@ -457,7 +459,7 @@ class Magma(ExtraTabCompletion, Expect):
             sage: magma._post_process_from_file("Hello")
             ''
         """
-        if not isinstance(s, str):
+        if not isinstance(s, string_types):
             raise RuntimeError("Error evaluating object in %s:\n%s" % (self, s))
         # Chop off the annoying "Loading ... " message that Magma
         # always outputs no matter what.
@@ -536,11 +538,11 @@ class Magma(ExtraTabCompletion, Expect):
 
             sage: nl=chr(10) # newline character
             sage: magma.eval(  # optional - magma
-            ... "_<x>:=PolynomialRing(Rationals());"+nl+
-            ... "repeat"+nl+
-            ... "  g:=3*b*x^4+18*c*x^3-6*b^2*x^2-6*b*c*x-b^3-9*c^2 where b:=Random([-10..10]) where c:=Random([-10..10]);"+nl+
-            ... "until g ne 0 and Roots(g) ne [];"+nl+
-            ... "print \"success\";")
+            ....: "_<x>:=PolynomialRing(Rationals());"+nl+
+            ....: "repeat"+nl+
+            ....: "  g:=3*b*x^4+18*c*x^3-6*b^2*x^2-6*b*c*x-b^3-9*c^2 where b:=Random([-10..10]) where c:=Random([-10..10]);"+nl+
+            ....: "until g ne 0 and Roots(g) ne [];"+nl+
+            ....: "print \"success\";")
             'success'
 
         Verify that :trac:`11401` is fixed::
@@ -1044,7 +1046,8 @@ class Magma(ExtraTabCompletion, Expect):
         EXAMPLES::
 
             sage: filename = os.path.join(SAGE_TMP, 'a.m')
-            sage: open(filename, 'w').write('function f(n) return n^2; end function;\nprint "hi";')
+            sage: with open(filename, 'w') as f:
+            ....:     _ = f.write('function f(n) return n^2; end function;\nprint "hi";')
             sage: print(magma.load(filename))      # optional - magma
             Loading ".../a.m"
             hi

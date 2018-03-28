@@ -22,12 +22,12 @@ AUTHORS:
 
 from __future__ import absolute_import, division, print_function
 
-include "cysignals/signals.pxi"
+from cysignals.signals cimport sig_on, sig_off
 
 from sage.libs.gmp.all cimport *
 
-from sage.libs.cypari2.paridecl cimport *
-from sage.libs.cypari2.stack cimport new_gen
+from cypari2.paridecl cimport *
+from cypari2.stack cimport new_gen
 
 cdef Gen new_gen_from_mpz_t(mpz_t value):
     """
@@ -62,6 +62,9 @@ cdef inline GEN _new_GEN_from_mpz_t(mpz_t value):
     For internal use only; this directly uses the PARI stack.
     One should call ``sig_on()`` before and ``sig_off()`` after.
     """
+    if mpz_sgn(value) == 0:
+        return gen_0
+
     cdef unsigned long limbs = mpz_size(value)
 
     cdef GEN z = cgeti(limbs + 2)

@@ -772,7 +772,7 @@ class SQLQuery(SageObject):
             if re.search(pattern, self.__query_string__) \
               or re.search(pattern, other.__query_string__):
                 raise TypeError('Input queries have joins but join ' \
-                    + 'paramaters are NoneType')
+                    + 'parameters are NoneType')
             s = ((self.__query_string__).upper()).split('FROM ')
             o = ((other.__query_string__).upper()).split('FROM ')
             s = s[1].split(' WHERE ')
@@ -909,10 +909,10 @@ class SQLDatabase(SageObject):
         is the name of a column::
 
             sage: table_skeleton = {
-            ... 'graph6':{'sql':'TEXT', 'index':True, 'primary_key':True},
-            ... 'vertices':{'sql':'INTEGER'},
-            ... 'edges':{'sql':'INTEGER'}
-            ... }
+            ....: 'graph6':{'sql':'TEXT', 'index':True, 'primary_key':True},
+            ....: 'vertices':{'sql':'INTEGER'},
+            ....: 'edges':{'sql':'INTEGER'}
+            ....: }
 
         Then we create the table::
 
@@ -1378,10 +1378,10 @@ class SQLDatabase(SageObject):
 
             sage: D = SQLDatabase()
             sage: table_skeleton = {
-            ... 'graph6':{'sql':'TEXT', 'index':True, 'primary_key':True},
-            ... 'vertices':{'sql':'INTEGER'},
-            ... 'edges':{'sql':'INTEGER'}
-            ... }
+            ....: 'graph6':{'sql':'TEXT', 'index':True, 'primary_key':True},
+            ....: 'vertices':{'sql':'INTEGER'},
+            ....: 'edges':{'sql':'INTEGER'}
+            ....: }
             sage: D.create_table('simon', table_skeleton)
             sage: D.show('simon')
             edges                graph6               vertices

@@ -272,8 +272,8 @@ class GeneralizedYoungWall(CombinatorialElement):
           is a proper wall.  (Note that the resulting wall may no longer be
           reduced.) Repeat the search and replace process for all other rows of
           the above form for each `k' < k`.  Then `\mathscr{N}(Y)` is the number
-          of distinct rows, not counting multipicity, in the wall resulting from
-          this process.
+          of distinct rows, not counting multiplicity, in the wall resulting
+          from this process.
 
         EXAMPLES::
 
@@ -786,18 +786,6 @@ class InfinityCrystalOfGeneralizedYoungWalls(UniqueRepresentation, Parent):
             Crystal of generalized Young walls of type ['A', 4, 1]
         """
         return "Crystal of generalized Young walls of type {}".format(self._cartan_type)
-
-    def weight_lattice_realization(self):
-        r"""
-        Return the extended affine weight lattice of ``self``.
-
-        EXAMPLES::
-
-            sage: Y = crystals.infinity.GeneralizedYoungWalls(3)
-            sage: Y.weight_lattice_realization()
-            Extended weight lattice of the Root system of type ['A', 3, 1]
-        """
-        return RootSystem(self._cartan_type).weight_lattice(extended=True)
 
 
 ########################

@@ -183,7 +183,7 @@ class UniqueSimplicialComplex(SimplicialComplex, UniqueRepresentation):
     :class:`UniqueRepresentation`. It is intended to be used to make
     standard examples of simplicial complexes unique. See :trac:`13566`.
 
-    INPUTS:
+    INPUT:
 
     - the inputs are the same as for a :class:`SimplicialComplex`,
       with one addition and two exceptions. The exceptions are that
@@ -599,7 +599,7 @@ def PseudoQuaternionicProjectivePlane():
 
 def PoincareHomologyThreeSphere():
     """
-    A triangulation of the Poincare homology 3-sphere.
+    A triangulation of the Poincaré homology 3-sphere.
 
     This is a manifold whose integral homology is identical to the
     ordinary 3-sphere, but it is not simply connected. In particular,
@@ -699,7 +699,7 @@ def RealProjectiveSpace(n):
     sends any subset `U` to its complement.  One can show that
     modding out by this action results in a triangulation for
     `\Bold{R}P^n`.  To find the facets in this triangulation, find
-    the facets in `S`.  These are indentified in pairs to form
+    the facets in `S`.  These are identified in pairs to form
     `\Bold{R}P^n`, so choose a representative from each pair: for
     each facet in `S`, replace any vertex in `S` containing 0 with
     its complement.

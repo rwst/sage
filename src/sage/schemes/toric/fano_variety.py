@@ -125,13 +125,13 @@ one-dimensional Calabi-Yau manifolds are elliptic curves!
 Now let's take a look at a toric realization of `M`-polarized K3 surfaces
 studied by Adrian Clingher and Charles F. Doran in [CD2007]_::
 
-    sage: p4318 = ReflexivePolytope(3, 4318)  # long time
-    sage: FTV = CPRFanoToricVariety(Delta_polar=p4318)  # long time
-    sage: FTV.anticanonical_hypersurface()  # long time
+    sage: p4318 = ReflexivePolytope(3, 4318)
+    sage: FTV = CPRFanoToricVariety(Delta_polar=p4318)
+    sage: FTV.anticanonical_hypersurface()
     Closed subscheme of 3-d CPR-Fano toric variety
     covered by 4 affine patches defined by:
-      a3*z2^12 + a4*z2^6*z3^6 + a2*z3^12
-    + a8*z0*z1*z2*z3 + a0*z1^3 + a1*z0^2
+      a0*z2^12 + a4*z2^6*z3^6 + a3*z3^12
+    + a8*z0*z1*z2*z3 + a2*z1^3 + a1*z0^2
 
 Below you will find detailed descriptions of available functions. Current
 functionality of this module is very basic, but it is under active
@@ -153,6 +153,7 @@ implementing them on your own as a patch for inclusion!
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 from __future__ import print_function
+from six.moves import range
 
 import re
 
@@ -164,7 +165,7 @@ from sage.rings.polynomial.multi_polynomial_ring import is_MPolynomialRing
 from sage.rings.polynomial.polynomial_ring import is_PolynomialRing
 from sage.rings.fraction_field import is_FractionField
 
-from sage.schemes.generic.algebraic_scheme import AlgebraicScheme_subscheme_toric
+from sage.schemes.toric.toric_subscheme import AlgebraicScheme_subscheme_toric
 from sage.schemes.toric.variety import (
                                             ToricVariety_field,
                                             normalize_names)
@@ -565,16 +566,16 @@ def CPRFanoToricVariety(Delta=None,
         raise ValueError("Delta_polar must be reflexive!")
     # Check/normalize coordinate_points and construct fan rays
     if coordinate_points is None:
-        coordinate_points = range(Delta_polar.nvertices())
+        coordinate_points = list(range(Delta_polar.nvertices()))
         if charts is not None:
             for chart in charts:
                 for point in chart:
                     if point not in coordinate_points:
                         coordinate_points.append(point)
     elif coordinate_points == "vertices":
-        coordinate_points = range(Delta_polar.nvertices())
+        coordinate_points = list(range(Delta_polar.nvertices()))
     elif coordinate_points == "all":
-        coordinate_points = range(Delta_polar.npoints())
+        coordinate_points = list(range(Delta_polar.npoints()))
         coordinate_points.remove(Delta_polar.origin())
     elif coordinate_points == "all but facets":
         coordinate_points = Delta_polar.skeleton_points(Delta_polar.dim() - 2)
@@ -587,7 +588,7 @@ def CPRFanoToricVariety(Delta=None,
             raise ValueError(
                 "no repetitions are allowed for coordinate points!\nGot: %s"
                 % coordinate_points)
-        if not cp_set.issuperset(range(Delta_polar.nvertices())):
+        if not cp_set.issuperset(list(range(Delta_polar.nvertices()))):
             raise ValueError("all %d vertices of Delta_polar must be used "
                 "for coordinates!\nGot: %s"
                 % (Delta_polar.nvertices(), coordinate_points))
@@ -1137,12 +1138,12 @@ class CPRFanoToricVariety_field(ToricVariety_field):
         We construct several complete intersections associated to the same
         nef-partition of the 3-dimensional reflexive polytope #2254::
 
-            sage: p = ReflexivePolytope(3, 2254)  # long time (7s on sage.math, 2011)
-            sage: np = p.nef_partitions()[1]      # long time
-            sage: np  # long time
+            sage: p = ReflexivePolytope(3, 2254)
+            sage: np = p.nef_partitions()[1]
+            sage: np
             Nef-partition {2, 3, 4, 7, 8} U {0, 1, 5, 6}
-            sage: X = CPRFanoToricVariety(Delta_polar=p)  # long time
-            sage: X.nef_complete_intersection(np)  # long time
+            sage: X = CPRFanoToricVariety(Delta_polar=p)
+            sage: X.nef_complete_intersection(np)
             Closed subscheme of 3-d CPR-Fano toric variety
             covered by 10 affine patches defined by:
               a0*z1*z4^2*z5^2*z7^3 + a2*z2*z4*z5*z6*z7^2*z8^2
@@ -1153,7 +1154,7 @@ class CPRFanoToricVariety_field(ToricVariety_field):
 
         Now we include only monomials associated to vertices of `\Delta_i`::
 
-            sage: X.nef_complete_intersection(np, monomial_points="vertices")  # long time
+            sage: X.nef_complete_intersection(np, monomial_points="vertices")
             Closed subscheme of 3-d CPR-Fano toric variety
             covered by 10 affine patches defined by:
               a0*z1*z4^2*z5^2*z7^3 + a2*z2*z4*z5*z6*z7^2*z8^2
@@ -1164,7 +1165,7 @@ class CPRFanoToricVariety_field(ToricVariety_field):
         (effectively, we set ``b5=0``). Next we provide coefficients explicitly
         instead of using default generic names::
 
-            sage: X.nef_complete_intersection(np,  # long time
+            sage: X.nef_complete_intersection(np,
             ....:       monomial_points="vertices",
             ....:       coefficients=[("a", "a^2", "a/e", "c_i"), list(range(1,6))])
             Closed subscheme of 3-d CPR-Fano toric variety
@@ -1177,9 +1178,9 @@ class CPRFanoToricVariety_field(ToricVariety_field):
         Finally, we take a look at the generic representative of these complete
         intersections in a completely resolved ambient toric variety::
 
-            sage: X = CPRFanoToricVariety(Delta_polar=p,  # long time
+            sage: X = CPRFanoToricVariety(Delta_polar=p,
             ....:                    coordinate_points="all")
-            sage: X.nef_complete_intersection(np)  # long time
+            sage: X.nef_complete_intersection(np)
             Closed subscheme of 3-d CPR-Fano toric variety
             covered by 22 affine patches defined by:
               a2*z2*z4*z5*z6*z7^2*z8^2*z9^2*z10^2*z11*z12*z13
@@ -1416,11 +1417,11 @@ class AnticanonicalHypersurface(AlgebraicScheme_subscheme_toric):
         Delta_polar = Delta.polar()
         # Monomial points normalization
         if monomial_points == "vertices":
-            monomial_points = range(Delta.nvertices())
+            monomial_points = list(range(Delta.nvertices()))
         elif monomial_points == "all":
-            monomial_points = range(Delta.npoints())
+            monomial_points = list(range(Delta.npoints()))
         elif monomial_points == "vertices+origin":
-            monomial_points = range(Delta.nvertices())
+            monomial_points = list(range(Delta.nvertices()))
             monomial_points.append(Delta.origin())
         elif monomial_points == "simplified" or monomial_points is None:
             monomial_points = Delta.skeleton_points(Delta.dim() - 2)
@@ -1550,11 +1551,11 @@ class NefCompleteIntersection(AlgebraicScheme_subscheme_toric):
             Delta_i = nef_partition.Delta(i)
             # Monomial points normalization
             if monomial_points[i] == "vertices":
-                monomial_points[i] = range(Delta_i.nvertices())
+                monomial_points[i] = list(range(Delta_i.nvertices()))
             elif monomial_points[i] == "all":
-                monomial_points[i] = range(Delta_i.npoints())
+                monomial_points[i] = list(range(Delta_i.npoints()))
             elif monomial_points[i] == "vertices+origin":
-                monomial_points[i] = range(Delta_i.nvertices())
+                monomial_points[i] = list(range(Delta_i.nvertices()))
                 if (Delta_i.origin() is not None
                     and Delta_i.origin() >= Delta_i.nvertices()):
                     monomial_points[i].append(Delta_i.origin())

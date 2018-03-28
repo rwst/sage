@@ -30,14 +30,13 @@ AUTHORS:
 #
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
-include "cysignals/signals.pxi"
-include "cysignals/memory.pxi"
+from libc.string cimport memset, memcpy
+from cysignals.memory cimport check_calloc, check_allocarray, check_reallocarray, sig_free
+from cysignals.signals cimport sig_check, sig_on, sig_off
 
 cdef extern from *:
-    void memset(void *, int, Py_ssize_t)
-    void memcpy(void * dest, void * src, Py_ssize_t n)
     int sprintf_3d "sprintf" (char*, char*, double, double, double)
     int sprintf_3i "sprintf" (char*, char*, int, int, int)
     int sprintf_4i "sprintf" (char*, char*, int, int, int, int)
@@ -761,7 +760,7 @@ cdef class IndexFaceSet(PrimitiveObject):
         low.x, low.y, low.z = INFINITY, INFINITY, INFINITY
         high.x, high.y, high.z = -INFINITY, -INFINITY, -INFINITY
 
-        for i in range(0,self.vcount):
+        for i in range(self.vcount):
             point_c_update_finite_lower_bound(&low, self.vs[i])
             point_c_update_finite_upper_bound(&high, self.vs[i])
         return ((low.x, low.y, low.z), (high.x, high.y, high.z))
@@ -1038,7 +1037,7 @@ cdef class IndexFaceSet(PrimitiveObject):
                str(self.fcount + extra_faces),
                faces]
 
-        from base import flatten_list
+        from .base import flatten_list
         name = render_params.unique_name('obj')
         all = flatten_list(all)
         if render_params.output_archive:
@@ -1167,7 +1166,7 @@ cdef class IndexFaceSet(PrimitiveObject):
         ct = len(colors)
         for k in range(len(colors)):
             if colors[k]:
-                all.append(self.sticker(range(k, n, ct), width, hover,
+                all.append(self.sticker(list(xrange(k, n, ct)), width, hover,
                                         texture=colors[k]))
         return Graphics3dGroup(all)
 
