@@ -37,7 +37,7 @@ def rubi_test(l):
     v = l[1]
     sig_on();
     try:
-        if not bool(res.diff(v) - l[3].diff(v) == 0):
+        if not bool(res.diff(v).simplify_full().canonicalize_radical() - l[3].diff(v) == 0):
             print('FAIL: ' + repr(l[0]) + " == " + repr(res) + " /// " + repr(l[3]))
     except (RuntimeError, AttributeError):
         print('ERROR:', l[0])
