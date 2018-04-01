@@ -17,7 +17,8 @@ EXAMPLES::
     sage: test_numerical()
 '''
 from cysignals.signals cimport sig_on, sig_off
-from sage.functions.all import (sqrt, log, arcsin, arctan, arctanh, hypergeometric, elliptic_e, elliptic_f)
+from sage.functions.all import (sqrt, log, arcsin, arctan, arctanh,
+        hypergeometric, elliptic_e, elliptic_f, cases)
 from sage.symbolic.constants import I, pi
 from sage.symbolic.ring import SR
 from sage.rings.all import ZZ
@@ -28,21 +29,29 @@ def rubi_test(l):
     sig_on()
     try:
         res = l[0].rubi(l[1])
-    except RuntimError:
-        print(l[0])
+    except RuntimeError:
+        print('FAIL:', l[0])
         return
     finally:
         sig_off()
     v = l[1]
-    if not bool(res.diff(v) - l[3].diff(v) == 0):
-        print('FAIL: ' + repr(l[0]) + " == " + repr(res) + " / " + repr(l[3]))
+    sig_on();
+    try:
+        if not bool(res.diff(v) - l[3].diff(v) == 0):
+            print('FAIL: ' + repr(l[0]) + " == " + repr(res) + " /// " + repr(l[3]))
+    except (RuntimeError, AttributeError):
+        print('ERROR:', l[0])
+        return
+    finally:
+        sig_off()
 
 def test_1():
     test = [
         [ SR(- ZZ(3)/ZZ(2)), x, ZZ(1), - ZZ(3)/ZZ(2)*x],
         [pi, x, ZZ(1), pi*x],
         [a, x, ZZ(1), a*x],
-        [x**m, x, ZZ(1), x**(ZZ(1) + m)/(ZZ(1) + m)],
+        [1/x, x, ZZ(1), log(x)],
+        [x**m, x, ZZ(1), x**(m + 1)/(m + 1)],
         [x**ZZ(100), x, ZZ(1), ZZ(1)/ZZ(101)*x**ZZ(101)],
         [x**(ZZ(5)/ZZ(2)), x, ZZ(1), ZZ(2)/ZZ(7)*x**(ZZ(7)/ZZ(2))],
         [x**(ZZ(5)/ZZ(3)), x, ZZ(1), ZZ(3)/ZZ(8)*x**(ZZ(8)/ZZ(3))],

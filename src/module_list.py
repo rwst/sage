@@ -1595,4 +1595,9 @@ ext_modules = [
 
     Extension('sage.tests.cython',
               sources = ['sage/tests/cython.pyx']),
+
+    Extension('sage.tests.rubi112',
+              sources = ['sage/tests/rubi112.pyx'],
+              language = 'c++',
+              extra_compile_args=["-O0"]),
 ]
