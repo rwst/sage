@@ -744,9 +744,9 @@ class EllipticF(BuiltinFunction):
             sage: elliptic_f(pi/2,x)
             elliptic_kc(x)
         """
-        if m == 0:
+        if m.is_zero():
             return z
-        elif z == 0:
+        elif z.is_zero():
             return Integer(0)
         elif z == pi / 2:
             return elliptic_kc(m)

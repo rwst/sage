@@ -23,7 +23,8 @@ from sage.symbolic.constants import I, pi
 from sage.symbolic.ring import SR
 from sage.rings.all import ZZ
 
-(a,b,c,d,e,f,m,n,x,u) = SR.var('a b c d e f m n x u')
+(a,b,c,d,e,f) = SR.var('a b c d e f',domain='positive')
+(m,n,x,u) = SR.var('m n x u')
 
 def rubi_test(l):
     sig_on()
@@ -37,7 +38,7 @@ def rubi_test(l):
     v = l[1]
     sig_on();
     try:
-        if not bool(res.diff(v).simplify_full().canonicalize_radical() - l[3].diff(v) == 0):
+        if not bool(res.diff(v).simplify_full().canonicalize_radical() - l[3].diff(v).simplify_full().canonicalize_radical() == 0):
             print('FAIL: ' + repr(l[0]) + " == " + repr(res) + " /// " + repr(l[3]))
     except (RuntimeError, AttributeError):
         print('ERROR:', l[0])
@@ -202,7 +203,7 @@ def test_7():
 
 def test_numerical():
     test = [
-        [(a + b*x)**(ZZ(1)/ZZ(2))*(c + d*x)**(ZZ(1)/ZZ(4)), x, ZZ(5), ZZ(4)/ZZ(7)*(a + b*x)**(ZZ(3)/ZZ(2))*(c + d*x)**(ZZ(1)/ZZ(4))/b + ZZ(4)/ZZ(21)*(b*c - a*d)*(c + d*x)**(ZZ(1)/ZZ(4))*sqrt(a + b*x)/(b*d) - ZZ(8)/ZZ(21)*(b*c - a*d)**(ZZ(9)/ZZ(4))*elliptic_f(b**(ZZ(1)/ZZ(4))*(c + d*x)**(ZZ(1)/ZZ(4))/(b*c - a*d)**(ZZ(1)/ZZ(4)), I)*sqrt(ZZ(1) - b*(c + d*x)/(b*c - a*d))/(b**(ZZ(5)/ZZ(4))*d**ZZ(2)*sqrt(a - b*c/d + b*(c + d*x)/d))],
+        [(a + b*x)**(ZZ(1)/ZZ(2))*(c + d*x)**(ZZ(1)/ZZ(4)), x, ZZ(5), ZZ(4)/7*(a+b*x)**(ZZ(3)/2)*(c+d*x)**(ZZ(1)/4)/b+ZZ(4)/21*(b*c-a*d)*(c+d*x)**(ZZ(1)/4)*sqrt(a+b*x)/(b*d)-ZZ(8)/21*(b*c-a*d)**(ZZ(9)/4)*elliptic_f(arcsin(b**(ZZ(1)/4)*(c+d*x)**(ZZ(1)/4)/(b*c-a*d)**(ZZ(1)/4)),ZZ(-1))*sqrt(1-b*(c+d*x)/(b*c-a*d))/(b**(ZZ(5)/4)*d**2*sqrt(a-b*c/d+b*(c+d*x)/d))],
         [ZZ(1)/((a + b*x)*(a*d/b + d*x)**ZZ(3)), x, ZZ(2), - ZZ(1)/ZZ(3)*b**ZZ(2)/(d**ZZ(3)*(a + b*x)**ZZ(3))],
     ]
 
