@@ -744,11 +744,12 @@ class EllipticF(BuiltinFunction):
             sage: elliptic_f(pi/2,x)
             elliptic_kc(x)
         """
-        if m.is_zero():
+        from sage.symbolic.ring import SR
+        if SR(m).is_trivial_zero():
             return z
-        elif z.is_zero():
+        elif SR(z).is_trivial_zero():
             return Integer(0)
-        elif z == pi / 2:
+        elif (z - pi / 2).is_trivial_zero():
             return elliptic_kc(m)
 
     def _evalf_(self, z, m, parent=None, algorithm=None):
