@@ -2,7 +2,7 @@
 ## pynac
 ###########################################
 
-export CXXFLAGS="-O2 -g $CXXFLAGS"
+export CXXFLAGS="-O0 -g -fstandalone-debug $CXXFLAGS"
 
 WORKDIR=${PWD}/src
 PYNACDIR=${WORKDIR}
