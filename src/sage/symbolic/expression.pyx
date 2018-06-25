@@ -4816,7 +4816,7 @@ cdef class Expression(CommutativeRingElement):
     ############################################################################
     # Pattern Matching
     ############################################################################
-    def match(self, pattern):
+    def match(self, pattern, all=None):
         """
         Check if self matches the given pattern.
 
@@ -4904,24 +4904,44 @@ cdef class Expression(CommutativeRingElement):
         cdef Expression p = self.coerce_in(pattern)
         cdef GExList mlst
         cdef bint res
-        sig_on()
-        try:
-            res = self._gobj.match(p._gobj, mlst)
-        finally:
-            sig_off()
-        if not res:
-            return None
-
         cdef dict rdict = {}
         cdef GExListIter itr = mlst.begin()
         cdef GExListIter lstend = mlst.end()
-        while itr != lstend:
-            key = new_Expression_from_GEx(self._parent, itr.obj().lhs())
-            val = new_Expression_from_GEx(self._parent, itr.obj().rhs())
-            rdict[key] = val
-            itr.inc()
-        return rdict
+        if not all:
+            sig_on()
+            try:
+                res = self._gobj.match(p._gobj, mlst)
+            finally:
+                sig_off()
+            if not res:
+                return None
 
+            while itr != lstend:
+                key = new_Expression_from_GEx(self._parent, itr.obj().lhs())
+                val = new_Expression_from_GEx(self._parent, itr.obj().rhs())
+                rdict[key] = val
+                itr.inc()
+            return rdict
+
+        cdef vector[GExMap] vec
+        cdef size_t i
+        cdef GExMap exmap
+        cdef GExPair pair
+        cdef GExMapIter mitr
+        sig_on()
+        try:
+            vec = self._gobj.all_matches(p._gobj)
+        finally:
+            sig_off()
+        if vec.empty():
+            return None
+        l = []
+        for exmap in vec:
+            m = {}
+            mitr = exmap.begin()
+            while mitr != exmap.end():
+                pair = mitr.obj()
+                mitr.inc()
 
     def find(self, pattern):
         """
