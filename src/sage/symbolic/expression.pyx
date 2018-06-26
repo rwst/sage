@@ -4905,9 +4905,9 @@ cdef class Expression(CommutativeRingElement):
         cdef GExList mlst
         cdef bint res
         cdef dict rdict = {}
-        cdef GExListIter itr = mlst.begin()
-        cdef GExListIter lstend = mlst.end()
-        if not all:
+        cdef GExListIter itr
+        cdef GExListIter lstend
+        if all is None or not all:
             sig_on()
             try:
                 res = self._gobj.match(p._gobj, mlst)
@@ -4916,6 +4916,8 @@ cdef class Expression(CommutativeRingElement):
             if not res:
                 return None
 
+            itr = mlst.begin()
+            lstend = mlst.end()
             while itr != lstend:
                 key = new_Expression_from_GEx(self._parent, itr.obj().lhs())
                 val = new_Expression_from_GEx(self._parent, itr.obj().rhs())
@@ -4941,7 +4943,12 @@ cdef class Expression(CommutativeRingElement):
             mitr = exmap.begin()
             while mitr != exmap.end():
                 pair = mitr.obj()
+                key = new_Expression_from_GEx(self._parent, pair.first)
+                val = new_Expression_from_GEx(self._parent, pair.second)
+                m[key] = val
                 mitr.inc()
+            l.append(m)
+        return l
 
     def find(self, pattern):
         """

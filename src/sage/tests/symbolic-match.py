@@ -55,4 +55,11 @@ EXAMPLES::
     ....: (w0*w2*w4+w4*w3*w1+w2*w4*w3)*(w2*w3*w1+w3*w4*w5+w4*w1*w5))
     sage: assert check((a*b*d+b*c*d+c*d*e)*(b*c*a+b*d*f+d*a*f),
     ....: (w0*w2*w4+w4*w3*w1+w2*w4*w3)*(w2*w3*w1+w3*w4*w5+w4*w1*w5))
+
+    sage: assert check(-3*(b*x + a)^(5/2)*a/b^3, w0*w1^w2*w3^w4)
+    sage: assert check(3*a*b^2*x^(m + 2), w0*w1^w2*w3^w4)
+    sage: assert not check(2*(d*x)^(m + 6)*a*b, w0*w1*(w1*w3)^w4)
+    sage: assert check(-sqrt(x*y)*sqrt(a*b), w0*(w1*w5)^w2*(w3*w4)^w2)
+    sage: assert check(-sqrt(-(a*x + 1)*(a*x - 1))*(a*x + 1)*
+    ....: ((x+1)*(a*x - 1))^(1/2), w0*(w1*w5)^w2*(w3*w5)^w4) 
 """

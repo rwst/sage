@@ -71,7 +71,8 @@ cdef extern from "pynac_wrap.h":
         void set_texname(char* t)
 
     cdef cppclass GExPair "std::pair<ex, ex>":
-        pass
+        GEx first
+        GEx second
 
     cdef cppclass GExMapIter "GiNaC::exmap::const_iterator":
         void inc "operator++" ()
