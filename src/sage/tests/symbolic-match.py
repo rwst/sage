@@ -17,29 +17,51 @@ EXAMPLES::
 
     sage: def check(s, p):
     ....:     m = s.match(p)
-    ....:     if (m and (p.subs(m, flags=1) - s).is_trivial_zero()):
-    ....:         return True
-    ....:     return False
+    ....:     if not m:
+    ....:         return 0
+    ....:     if not (p.subs(m, flags=1) - s).is_trivial_zero():
+    ....:         raise AithmeticError
+    ....:     m = s.match(p, all=True)
+    ....:     if not m:
+    ....:         raise AithmeticError
+    ....:     n = 0
+    ....:     for mm in m:
+    ....:         if (p.subs(mm, flags=1) - s).is_trivial_zero():
+    ....:             n = n+1
+    ....:         else:
+    ....:             raise AithmeticError
+    ....:     return n
     
-    sage: assert check((a+b)*(a+c), (w0+w1)*(w0+w2))
-    sage: assert check((a+b)*(a+c), (w0+w1)*(w1+w2))
-    sage: assert check((c+b)*(a+c), (w0+w1)*(w0+w2))
-    sage: assert check((c+b)*(a+c), (w0+w1)*(w1+w2))
+    sage: assert check(sqrt(c+x)*c, w0 * sqrt(w0+w1)) == 1
+    sage: assert check(sqrt(c+x)*c, w1 * sqrt(w0+w1)) == 1
+    sage: assert check(sqrt(c+x)*x, w0 * sqrt(w0+w1)) == 1
+    sage: assert check(sqrt(c+x)*x, w1 * sqrt(w0+w1)) == 1
+
+    sage: assert check(sqrt(c+x)*x, w0 * sqrt(w1+w2)) == 2
+    sage: assert check(sqrt(a+b)*c, w0 * sqrt(w1+w2)) == 2
+
+    sage: assert check((a+b)*(a+c), (w0+w1)*(w0+w2)) == 2
+    sage: assert check((a+b)*(a+c), (w0+w1)*(w1+w2)) == 2
+    sage: assert check((c+b)*(a+c), (w0+w1)*(w0+w2)) == 2
+    sage: assert check((c+b)*(a+c), (w0+w1)*(w1+w2)) == 2
     
-    sage: assert check((a+b)^(a+c), (w0+w1)^(w0+w2))
-    sage: assert check((a+b)^(a+c), (w0+w1)^(w1+w2))
-    sage: assert check((c+b)^(a+c), (w0+w1)^(w0+w2))
-    sage: assert check((c+b)^(a+c), (w0+w1)^(w1+w2))
+    sage: assert check((a+b)*(a+c), (w0+w1)*(w3+w2)) == 4
+    sage: assert check((a+b)*(d+c), (w0+w1)*(w3+w2)) == 4
+
+    sage: assert check((a+b)^(a+c), (w0+w1)^(w0+w2)) == 1
+    sage: assert check((a+b)^(a+c), (w0+w1)^(w1+w2)) == 1
+    sage: assert check((c+b)^(a+c), (w0+w1)^(w0+w2)) == 1
+    sage: assert check((c+b)^(a+c), (w0+w1)^(w1+w2)) == 1
     
-    sage: assert check((a^b)^(a+c), (w0^w1)^(w0+w2))
-    sage: assert not check((a^b)^(a+c), (w0^w1)^(w1+w2))
-    sage: assert check((c^b)^(a+c), (w0^w1)^(w0+w2))
-    sage: assert not check((c^b)^(a+c), (w0^w1)^(w1+w2))
+    sage: assert check((a^b)^(a+c), (w0^w1)^(w0+w2)) == 1
+    sage: assert check((a^b)^(a+c), (w0^w1)^(w1+w2)) == 0
+    sage: assert check((c^b)^(a+c), (w0^w1)^(w0+w2)) == 1
+    sage: assert check((c^b)^(a+c), (w0^w1)^(w1+w2)) == 0
 
     sage: assert check (hypergeometric((a+c,b+c), (c,d), x),
-    ....: hypergeometric((w0+w2,w1+w2), (w2,w3), x))
-    sage: assert not check (hypergeometric((a+c,b+c), (c,d), x),
-    ....: hypergeometric((w0+w1,w1+w2), (w2,w3), x))
+    ....: hypergeometric((w0+w2,w1+w2), (w2,w3), x)) == 1
+    sage: assert check (hypergeometric((a+c,b+c), (c,d), x),
+    ....: hypergeometric((w0+w1,w1+w2), (w2,w3), x)) == 0
 
     sage: assert check(((a+b+1)*(a+b+2))*b, w1*((w0+w1+w2)*(w0+w1+w3)))
     sage: assert check(((a+b+1)*(a+b+2))*b, w0*((w0+w1+w2)*(w0+w1+w3)))
