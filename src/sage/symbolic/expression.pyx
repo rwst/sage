@@ -622,7 +622,7 @@ cdef class Expression(CommutativeRingElement):
             sage: x^(-5)
             x^(-5)
             sage: x^(-y)
-            x^(-y)
+            1/(x^y)
             sage: 2*x^(-1)
             2/x
             sage: i*x
@@ -1461,7 +1461,7 @@ cdef class Expression(CommutativeRingElement):
             sage: AA(-golden_ratio)
             -1.618033988749895?
             sage: QQbar((2*I)^(1/2))
-            I + 1
+            1 + 1*I
             sage: QQbar(e^(pi*I/3))
             0.50000000000000000? + 0.866025403784439?*I
 
@@ -3650,14 +3650,14 @@ cdef class Expression(CommutativeRingElement):
             sage: repl_dict = {b_0: b_0, b_3: b_1, b_2: b_3, b_1: b_2}
             sage: P = precomp.substitute(repl_dict)
             sage: P.expand()
-            -2^(-b_0)*2^(-b_2)*2^b_3 - 2^b_0*2^(-b_2)*2^b_3 -
-            2^(-b_0)*2^b_2*2^b_3 + 2^b_0*2^b_2*2^b_3 - 2*2^(-b_0)*2^(-b_2)
-            - 2*2^b_0*2^(-b_2) - 2*2^(-b_0)*2^b_2 + 2*2^b_0*2^b_2 +
-            2^(-b_0)*2^b_3 + 2^b_0*2^b_3 + 2^(-b_2)*2^b_3 + 2^b_2*2^b_3 +
-            2*2^(-b_0) + 2*2^b_0 + 2*2^(-b_2) + 2*2^b_2 - 9*2^b_3 -
-            2^(-b_0)*2^(-b_2)/2^b_3 - 2^b_0*2^(-b_2)/2^b_3 -
-            2^(-b_0)*2^b_2/2^b_3 + 2^b_0*2^b_2/2^b_3 + 2^(-b_0)/2^b_3 +
-            2^b_0/2^b_3 + 2^(-b_2)/2^b_3 + 2^b_2/2^b_3 - 9/2^b_3 - 18
+            2^b_0*2^b_2*2^b_3 + 2*2^b_0*2^b_2 + 2^b_0*2^b_3 + 2^b_2*2^b_3 +
+            2*2^b_0 + 2*2^b_2 - 9*2^b_3 + 2^b_0*2^b_2/2^b_3 -
+            2^b_0*2^b_3/2^b_2 - 2^b_2*2^b_3/2^b_0 - 2*2^b_0/2^b_2 -
+            2*2^b_2/2^b_0 + 2^b_0/2^b_3 + 2^b_2/2^b_3 + 2^b_3/2^b_0 +
+            2^b_3/2^b_2 + 2/2^b_0 + 2/2^b_2 - 2^b_0/(2^b_2*2^b_3) -
+            2^b_2/(2^b_0*2^b_3) - 9/2^b_3 - 2^b_3/(2^b_0*2^b_2) -
+            2/(2^b_0*2^b_2) + 1/(2^b_0*2^b_3) + 1/(2^b_2*2^b_3) -
+            1/(2^b_0*2^b_2*2^b_3) - 18
 
             sage: _0,b_1,b_2=var('b_0,b_1,b_2')
             sage: f = 1/27*b_2^2/(2^b_2)^2 + 1/27*b_1^2/(2^b_1)^2 + \
@@ -3838,7 +3838,7 @@ cdef class Expression(CommutativeRingElement):
 
             sage: x = SR.symbol('x', domain='real')
             sage: (x^3)^(1/3)
-            (x^3)^(1/3)
+            x
             sage: (x^4)^(1/4)
             abs(x)
             sage: (x^8)^(1/4)
@@ -3901,7 +3901,7 @@ cdef class Expression(CommutativeRingElement):
             sage: 2^(x/log(2))
             e^x
             sage: 2^(-x^2/2/log(2))
-            e^(-1/2*x^2)
+            1/e^(1/2*x^2)
             sage: x^(x/log(x))
             x^(x/log(x))
             sage: assume(x > 0)
@@ -3931,11 +3931,11 @@ cdef class Expression(CommutativeRingElement):
             sage: I^(1/2)
             sqrt(I)
             sage: I^(2/3)
-            -1
+            I^(2/3)
             sage: 2^(1/2)
             sqrt(2)
             sage: (2*I)^(1/2)
-            I + 1
+            sqrt(2*I)
 
         Test if we can take powers of elements of `\QQ(i)` (:trac:`8659`)::
 
@@ -6874,7 +6874,7 @@ cdef class Expression(CommutativeRingElement):
             sage: f = pi^3*x - y^2*e - I; f
             pi^3*x - y^2*e - I
             sage: f.polynomial(CDF)
-            (-2.71828182846)*y^2 + 31.0062766803*x - 1.0*I
+            (-2.718281828459045)*y^2 + 31.006276680299827*x - 1.0*I
             sage: f.polynomial(CC)
             (-2.71828182845905)*y^2 + 31.0062766802998*x - 1.00000000000000*I
             sage: f.polynomial(ComplexField(70))
@@ -6988,7 +6988,7 @@ cdef class Expression(CommutativeRingElement):
             pi*y^3 + x^3*e + sqrt(2) + I
             sage: R = CDF['x,y']
             sage: R(f)
-            2.71828182846*x^3 + 3.14159265359*y^3 + 1.41421356237 + 1.0*I
+            2.718281828459045*x^3 + 3.141592653589793*y^3 + 1.414213562373095 + 1.0*I
 
         We coerce to a higher-precision polynomial ring::
 
@@ -12252,14 +12252,14 @@ cdef class Expression(CommutativeRingElement):
 
             sage: (n,k,j)=var('n,k,j')
             sage: sum(binomial(n,k)*binomial(k-1,j)*(-1)**(k-1-j),k,j+1,n)
-            -(-1)^(-j)*sum((-1)^k*binomial(k - 1, j)*binomial(n, k), k, j + 1, n)
+            -(-1)^j*sum((-1)^k*binomial(k - 1, j)*binomial(n, k), k, j + 1, n)
             sage: assume(j>-1)
             sage: sum(binomial(n,k)*binomial(k-1,j)*(-1)**(k-1-j),k,j+1,n)
             1
             sage: forget()
             sage: assume(n>=j)
             sage: sum(binomial(n,k)*binomial(k-1,j)*(-1)**(k-1-j),k,j+1,n)
-            -(-1)^(-j)*sum((-1)^k*binomial(k - 1, j)*binomial(n, k), k, j + 1, n)
+            -(-1)^j*sum((-1)^k*binomial(k - 1, j)*binomial(n, k), k, j + 1, n)
             sage: forget()
             sage: assume(j==-1)
             sage: sum(binomial(n,k)*binomial(k-1,j)*(-1)**(k-1-j),k,j+1,n)
@@ -12267,7 +12267,7 @@ cdef class Expression(CommutativeRingElement):
             sage: forget()
             sage: assume(j<-1)
             sage: sum(binomial(n,k)*binomial(k-1,j)*(-1)**(k-1-j),k,j+1,n)
-            -(-1)^(-j)*sum((-1)^k*binomial(k - 1, j)*binomial(n, k), k, j + 1, n)
+            -(-1)^j*sum((-1)^k*binomial(k - 1, j)*binomial(n, k), k, j + 1, n)
             sage: forget()
 
         Check that :trac:`16176` is fixed::
